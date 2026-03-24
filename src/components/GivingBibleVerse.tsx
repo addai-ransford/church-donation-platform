@@ -22,7 +22,7 @@ export function GivingBibleVerse() {
     <div
       onMouseEnter={() => setPaused(true)}
       onMouseLeave={() => setPaused(false)}
-      className="relative bg-white/[0.03] border border-white/10 rounded-2xl p-6 text-center overflow-hidden"
+      className="relative bg-white/[0.03] border border-white/10 rounded-2xl   p-3 text-center overflow-hidden"
     >
       <div className="absolute inset-0 bg-gradient-to-br from-yellow-500/5 to-transparent pointer-events-none" />
 

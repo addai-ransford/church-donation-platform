@@ -7,8 +7,8 @@ import donationRoutes from "./donation.routes.js";
 const router = express.Router();
 
 // Grouped routes
-app.use("/api/admin", adminRoutes);
-app.use("/purposes", purposeRoutes);
-app.use(donationRoutes);
+router.use("/api/admin", adminRoutes);
+router.use("/api/purposes", purposeRoutes);
+router.use(donationRoutes);
 
 export default router;

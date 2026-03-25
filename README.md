@@ -1,73 +1,76 @@
-# React + TypeScript + Vite
+# Church Donation Platform
 
-This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
+![License](https://img.shields.io/badge/License-MIT-green)  
+![React](https://img.shields.io/badge/React-18.2.0-blue)  
+![TypeScript](https://img.shields.io/badge/TypeScript-5.2.2-blue)  
+![Stripe](https://img.shields.io/badge/Stripe-Integration-yellow)
 
-Currently, two official plugins are available:
+---
 
-- [@vitejs/plugin-react](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react) uses [Oxc](https://oxc.rs)
-- [@vitejs/plugin-react-swc](https://github.com/vitejs/vite-plugin-react/blob/main/packages/plugin-react-swc) uses [SWC](https://swc.rs/)
+## Overview
 
-## React Compiler
+The **Church Donation Platform** is a full-stack donation management system designed for churches to:
 
-The React Compiler is not enabled on this template because of its impact on dev & build performances. To add it, see [this documentation](https://react.dev/learn/react-compiler/installation).
+- Accept secure donations online.  
+- Track contributions per donation purpose.  
+- Allow admins to manage donation purposes and view total revenue.  
 
-## Expanding the ESLint configuration
+It is built with **React + TypeScript** for the frontend, **Stripe** for payments, and a modular backend API.
 
-If you are developing a production application, we recommend updating the configuration to enable type-aware lint rules:
+---
 
-```js
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
+## Client / Use Case
 
-      // Remove tseslint.configs.recommended and replace with this
-      tseslint.configs.recommendedTypeChecked,
-      // Alternatively, use this for stricter rules
-      tseslint.configs.strictTypeChecked,
-      // Optionally, add this for stylistic rules
-      tseslint.configs.stylisticTypeChecked,
+This platform was specifically developed for **Christ Apostolic Church International (Belgium)**, addressing real-world needs such as:
 
-      // Other configs...
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+- Managing multiple donation categories  
+- Providing a seamless and secure giving experience for members  
+- Enabling transparent financial tracking for administrators  
+- Supporting both predefined and custom donation purposes  
 
-You can also install [eslint-plugin-react-x](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-x) and [eslint-plugin-react-dom](https://github.com/Rel1cx/eslint-react/tree/main/packages/plugins/eslint-plugin-react-dom) for React-specific lint rules:
+---
 
-```js
-// eslint.config.js
-import reactX from 'eslint-plugin-react-x'
-import reactDom from 'eslint-plugin-react-dom'
+## Screenshots
 
-export default defineConfig([
-  globalIgnores(['dist']),
-  {
-    files: ['**/*.{ts,tsx}'],
-    extends: [
-      // Other configs...
-      // Enable lint rules for React
-      reactX.configs['recommended-typescript'],
-      // Enable lint rules for React DOM
-      reactDom.configs.recommended,
-    ],
-    languageOptions: {
-      parserOptions: {
-        project: ['./tsconfig.node.json', './tsconfig.app.json'],
-        tsconfigRootDir: import.meta.dirname,
-      },
-      // other options...
-    },
-  },
-])
-```
+### Contributions Page
+
+![Public Contributions Page](./public/contribution_page.png)  
+*Users can select contribution purposes, choose or enter amounts, and make payments.*
+
+### Admin Dashboard
+
+![Admin Dashboard](./public/admin_dashboard.png)  
+*Admins can add, delete, and toggle donation purposes, and track total revenue.*
+
+---
+
+## Features
+
+### Public User Features
+
+- Select **predefined donation purposes** or **enter custom purposes**.  
+- Choose **preset or custom amounts**.  
+- Animated Bible verses during the donation process.  
+- **Secure payments via Stripe PaymentIntent**.  
+- Responsive design for **mobile and desktop**.  
+
+### Admin Features
+
+- Add, delete, and toggle donation purposes.  
+- Track total revenue and individual purpose contributions.  
+- Search and filter donation purposes.  
+- Responsive **dashboard layout** with scrollable purpose list.  
+- Visual status indicators for each purpose (active/inactive).  
+
+### Technical Features
+
+- **React + TypeScript** frontend with reusable components.  
+- **Custom hooks**:  
+  - `useAdminPurposes` – central hook for admin donation purpose management.  
+  - `useCreatePurpose`, `useDeletePurpose`, `useTogglePurposeStatus`.  
+- **React Query / TanStack Query** for async data fetching and mutations.  
+- **Stripe Integration** with dynamic public key loading.  
+- Environment configuration via `.env` or `env.yaml`.  
+- **Vite** powered for fast development and HMR.  
+
+

@@ -1,8 +1,11 @@
 import bcrypt from "bcrypt";
 import { db } from "../firebaseAdmin.js";
 
+export const USERS_COLLECTION =
+  process.env.FIREBASE_USERS_COLLECTION|| "users";
+
 export const registerUser = async (username, password) => {
-    const userRef = db.collection("users").doc(username);
+    const userRef = db.collection(USERS_COLLECTION).doc(username);
     const doc = await userRef.get();
 
     if (doc.exists) {
@@ -23,7 +26,7 @@ export const registerUser = async (username, password) => {
 };
 
 export const loginUser = async (username, password) => {
-    const userRef = db.collection("users").doc(username);
+    const userRef = db.collection(USERS_COLLECTION).doc(username);
     const doc = await userRef.get();
 
     if (!doc.exists) throw new Error("Invalid credentials");

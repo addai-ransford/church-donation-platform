@@ -12,6 +12,7 @@ import {
 import { useAdminPurposes } from "../hooks";
 import type { AdminPurpose } from "../types";
 import { GlowingDivider } from "../components";
+import { CurrentPlayer } from "./user";
 
 export const AdminDashboard = () => {
   const {
@@ -125,26 +126,36 @@ export const AdminDashboard = () => {
           <div className="absolute bottom-[-10%] left-[-10%] w-[30%] h-[30%] bg-blue-600/10 blur-[120px] rounded-full" />
         </div>
 
-        <div className="w-full  h-full flex flex-col space-y-4 lg:space-y-6 relative z-10 overflow-hidden">
-          <header className="flex flex-col md:flex-row md:items-end justify-between gap-3 shrink-0">
-            <div>
-              <div className="flex items-center gap-3 mb-1">
-                <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
-                  <Church className="text-yellow-500" size={16} />
-                </div>
-                <h2 className="text-yellow-500 text-[8px] font-black uppercase tracking-[0.3em]">
-                  CACI Antwerp - Beligum
-                </h2>
-                <div className="flex text-[9px] font-bold text-green-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/10 items-center gap-2 ">
-                  <ShieldCheck size={12} /> Secure Admin Dashboard
-                </div>
+        <div className="w-full h-full flex flex-col space-y-4 lg:space-y-6 relative z-10 overflow-hidden">
+          <header className="flex flex-col gap-3 shrink-0">
+            <div className="flex items-center justify-between">
+              {/* LEFT: Secure Admin */}
+              <div className="flex text-[9px] font-bold text-green-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/10 items-center gap-2">
+                <ShieldCheck size={12} />
+                Secure Admin Dashboard
               </div>
-              <h1 className="text-xl lg:text-3xl font-black text-white italic uppercase tracking-tight">
-                Ministry <span className="text-yellow-500">Finance</span>
-              </h1>
+
+              {/* RIGHT: Current Player */}
+              <CurrentPlayer />
+            </div>
+
+            <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">
+              <div>
+                <div className="flex items-center gap-3 mb-1">
+                  <div className="p-1.5 bg-yellow-500/10 rounded-lg border border-yellow-500/20">
+                    <Church className="text-yellow-500" size={16} />
+                  </div>
+                  <h2 className="text-yellow-500 text-[8px] font-black uppercase tracking-[0.3em]">
+                    CACI Antwerp - Belgium
+                  </h2>
+                </div>
+
+                <h1 className="text-xl lg:text-3xl font-black text-white italic uppercase tracking-tight">
+                  Ministry <span className="text-yellow-500">Finance</span>
+                </h1>
+              </div>
             </div>
           </header>
-
           <div className="bg-gradient-to-br from-yellow-500 to-amber-600 rounded-3xl p-5 lg:p-8 text-black shadow-2xl relative overflow-hidden shrink-0">
             <TrendingUp className="absolute right-[-5%] top-[-10%] w-32 lg:w-48 h-32 lg:h-48 opacity-10 rotate-12" />
             <p className="text-[9px] lg:text-[10px] font-black uppercase tracking-widest opacity-70">
@@ -221,7 +232,6 @@ export const AdminDashboard = () => {
                 )}
               </div>
 
-              {/* List Footer - Fixed at bottom of list */}
               <div className="p-3 bg-yellow-500/5 border-t border-white/5 flex justify-between items-center px-6 shrink-0">
                 <span className="text-[8px] font-black text-slate-500 uppercase tracking-[0.2em]">
                   {filteredPurposes.length} categories

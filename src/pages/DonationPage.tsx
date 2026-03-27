@@ -1,18 +1,12 @@
 import { useState, useEffect } from "react";
-import {
-  ShieldCheck,
-  Sparkles,
-  ArrowLeft,
-  Loader2,
-  Euro,
-  Heart,
-} from "lucide-react";
+import { ShieldCheck, Sparkles, ArrowLeft, Loader2, Euro } from "lucide-react";
 import { Elements } from "@stripe/react-stripe-js";
 import logo from "../assets/caci-logo.png";
 import { getStripePromise } from "../stripe/stripe";
 import { useCreateDonationIntent, usePurposesQuery } from "../hooks";
 import {
   DonationCheckout,
+  DonationSuccess,
   GivingBibleVerse,
   GlowingDivider,
 } from "../components";
@@ -27,9 +21,11 @@ export default function DonationPage() {
   const [amount, setAmount] = useState<number>(50);
   const [custom, setCustom] = useState<boolean>(false);
   const [input, setInput] = useState<string>("");
-  const [fund, setFund] = useState<string>("offering");
+  const [fund, setFund] = useState<string>("");
   const [isCreating, setIsCreating] = useState<boolean>(false);
   const [isSuccess, setIsSuccess] = useState<boolean>(false);
+  const [successAmount, setSuccessAmount] = useState<number>(0);
+  const [successFund, setSuccessFund] = useState<string>("");
 
   useEffect(() => {
     if (purposes.length > 0 && !fund) {
@@ -50,31 +46,56 @@ export default function DonationPage() {
     }
   };
 
+  /**
+   * Detect Stripe redirect return success
+   */
+  useEffect(() => {
+    const checkStripeReturn = async () => {
+      const stripe = await stripePromise;
+      if (!stripe) return;
+
+      const params = new URLSearchParams(window.location.search);
+      const paymentIntentClientSecret = params.get(
+        "payment_intent_client_secret",
+      );
+
+      if (!paymentIntentClientSecret) return;
+
+      const { paymentIntent } = await stripe.retrievePaymentIntent(
+        paymentIntentClientSecret,
+      );
+
+      if (paymentIntent?.status === "succeeded") {
+        setIsSuccess(true);
+        setSuccessAmount((paymentIntent.amount || 0) / 100);
+        setSuccessFund(paymentIntent.metadata?.fund || "General");
+
+        // clean URL after success
+        window.history.replaceState(
+          {},
+          document.title,
+          window.location.pathname,
+        );
+      }
+    };
+
+    checkStripeReturn();
+  }, []);
+
   if (isSuccess) {
     return (
-      <div className="min-h-screen bg-[#020617] flex items-center justify-center p-6 text-center">
-        <div className="space-y-6 animate-in fade-in zoom-in duration-500">
-          <div className="w-20 h-20 bg-green-500/20 rounded-full flex items-center justify-center mx-auto">
-            <Heart className="text-green-500 fill-green-500" size={40} />
-          </div>
-          <h2 className="text-3xl font-black text-white">God Bless You!</h2>
-          <p className="text-slate-400 max-w-xs mx-auto">
-            Your donation of €{finalAmount} to {fund} has been received. Thank
-            you for supporting CACI Antwerp.
-          </p>
-          <button
-            onClick={() => {
-              setIsSuccess(false);
-              setClientSecret(null);
-              setInput("");
-              setCustom(false);
-            }}
-            className="px-8 py-3 bg-white text-black font-bold rounded-xl hover:bg-slate-200 transition-colors"
-          >
-            Return Home
-          </button>
-        </div>
-      </div>
+      <DonationSuccess
+        successAmount={successAmount}
+        successFund={successFund}
+        onReturnHome={() => {
+          setIsSuccess(false);
+          setClientSecret(null);
+          setInput("");
+          setCustom(false);
+          setAmount(50);
+          setFund(purposes[0]?.id || "");
+        }}
+      />
     );
   }
   return (
@@ -102,6 +123,7 @@ export default function DonationPage() {
               Antwerp - Belgium
             </p>
           </div>
+
           <div className="px-6 py-4 flex-grow flex flex-col justify-between min-h-0 overflow-y-auto">
             <div className="space-y-6">
               <section>
@@ -196,6 +218,7 @@ export default function DonationPage() {
                 )}
               </section>
             </div>
+
             <GivingBibleVerse />
 
             <button
@@ -214,7 +237,8 @@ export default function DonationPage() {
           </div>
 
           <GlowingDivider />
-          <footer className="mt-auto px-8 pb-10 pt-6 border-t text-color-black border-white/5 bg-black/20  text-center space-y-5">
+
+          <footer className="mt-auto px-8 pb-10 pt-6 border-t text-color-black border-white/5 bg-black/20 text-center space-y-5">
             <div className="flex justify-center items-center gap-5 text-[9px] text-slate-500 font-bold uppercase tracking-[0.2em]">
               <span className="flex items-center gap-1.5">
                 <ShieldCheck size={14} className="text-green-500" /> Secure SSL
@@ -223,26 +247,6 @@ export default function DonationPage() {
               <span className="flex items-center gap-1.5">
                 <Sparkles size={14} className="text-yellow-500" /> CACI Belgium
               </span>
-            </div>
-
-            <div className="flex flex-col gap-2">
-              <a
-                href="https://addai-ransford-portfolio-901047758364.europe-west1.run.app/"
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-slate-600 hover:text-yellow-500 transition-colors text-[9px] font-medium uppercase tracking-widest"
-              >
-                Developed by{" "}
-                <span className="text-slate-500 font-bold">Ransford</span>
-              </a>
-              <div className="flex justify-center gap-4 text-[8px] text-slate-700 font-medium">
-                <button className="hover:text-slate-500 transition-colors">
-                  Terms of Service
-                </button>
-                <button className="hover:text-slate-500 transition-colors">
-                  Privacy Policy
-                </button>
-              </div>
             </div>
           </footer>
         </div>
@@ -268,6 +272,10 @@ export default function DonationPage() {
           <DonationCheckout
             onSuccess={() => {
               setIsSuccess(true);
+              setSuccessAmount(finalAmount);
+              setSuccessFund(
+                purposes.find((p: any) => p.id === fund)?.label || fund,
+              );
               setClientSecret(null);
             }}
             onCancel={() => setClientSecret(null)}

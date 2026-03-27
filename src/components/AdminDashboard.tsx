@@ -132,7 +132,7 @@ export const AdminDashboard = () => {
               {/* LEFT: Secure Admin */}
               <div className="flex text-[9px] font-bold text-green-500 uppercase tracking-widest bg-white/5 px-3 py-1.5 rounded-full border border-white/10 items-center gap-2">
                 <ShieldCheck size={12} />
-                Secure Admin Dashboard
+                Secure
               </div>
 
               {/* RIGHT: Current Player */}

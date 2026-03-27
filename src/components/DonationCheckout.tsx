@@ -24,20 +24,42 @@ export const DonationCheckout = ({ onSuccess, onCancel }: Props) => {
     setLoading(true);
     setErrorMsg(null);
 
-    const { error } = await stripe.confirmPayment({
-      elements,
-      confirmParams: { return_url: window.location.origin },
-      redirect: "if_required",
-    });
+    try {
+      const { error, paymentIntent } = await stripe.confirmPayment({
+        elements,
+        confirmParams: {
+          return_url: `${window.location.origin}/`,
+        },
+        redirect: "if_required",
+      });
 
-    if (error) {
-      setErrorMsg(error.message || "Payment failed");
+      if (error) {
+        setErrorMsg(error.message || "Payment failed");
+        return;
+      }
+
+      if (paymentIntent?.status === "succeeded") {
+        onSuccess();
+        return;
+      }
+
+      if (paymentIntent?.status === "processing") {
+        setErrorMsg("Payment is processing. Please wait a moment.");
+        return;
+      }
+
+      if (paymentIntent?.status === "requires_payment_method") {
+        setErrorMsg("Payment failed. Please try another payment method.");
+        return;
+      }
+
+      setErrorMsg("Payment was not completed.");
+    } catch (err: any) {
+      setErrorMsg(err.message || "Something went wrong");
+    } finally {
       setLoading(false);
-    } else {
-      onSuccess();
     }
   };
-
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center p-4 animate-in fade-in duration-300">
       <div className="absolute inset-0  backdrop-blur-sm" />

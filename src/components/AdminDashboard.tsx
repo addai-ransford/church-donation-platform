@@ -12,7 +12,7 @@ import {
 import { useAdminPurposes } from "../hooks";
 import type { AdminPurpose } from "../types";
 import { GlowingDivider } from "../components";
-import { CurrentPlayer } from "./user";
+import { CurrentUser } from "./user";
 
 export const AdminDashboard = () => {
   const {
@@ -136,7 +136,7 @@ export const AdminDashboard = () => {
               </div>
 
               {/* RIGHT: Current Player */}
-              <CurrentPlayer />
+              <CurrentUser />
             </div>
 
             <div className="flex flex-col md:flex-row md:items-start md:justify-between gap-2">

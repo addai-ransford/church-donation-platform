@@ -1,11 +1,9 @@
 import bcrypt from "bcrypt";
 import { db } from "../firebaseAdmin.js";
-
-export const USERS_COLLECTION =
-  process.env.FIREBASE_USERS_COLLECTION|| "users";
+import { COLLECTIONS } from "../config/index.js";
 
 export const registerUser = async (username, password) => {
-    const userRef = db.collection(USERS_COLLECTION).doc(username);
+    const userRef = db.collection(COLLECTIONS.users).doc(username);
     const doc = await userRef.get();
 
     if (doc.exists) {
@@ -26,7 +24,7 @@ export const registerUser = async (username, password) => {
 };
 
 export const loginUser = async (username, password) => {
-    const userRef = db.collection(USERS_COLLECTION).doc(username);
+    const userRef = db.collection(COLLECTIONS.users).doc(username);
     const doc = await userRef.get();
 
     if (!doc.exists) throw new Error("Invalid credentials");
@@ -40,7 +38,7 @@ export const loginUser = async (username, password) => {
 };
 
 export const saveRefreshToken = async (userId, token) => {
-    await db.collection("refreshTokens").doc(token).set({
+    await db.collection(COLLECTIONS.refreshToken).doc(token).set({
         userId,
         token,
         createdAt: new Date().toISOString()
@@ -48,10 +46,10 @@ export const saveRefreshToken = async (userId, token) => {
 };
 
 export const findRefreshToken = async (token) => {
-    const doc = await db.collection("refreshTokens").doc(token).get();
+    const doc = await db.collection(COLLECTIONS.refreshToken).doc(token).get();
     return doc.exists ? doc.data() : null;
 };
 
 export const deleteRefreshToken = async (token) => {
-    await db.collection("refreshTokens").doc(token).delete();
+    await db.collection(COLLECTIONS.refreshToken).doc(token).delete();
 };

@@ -1,11 +1,13 @@
 import express from "express";
 import { db } from "../firebaseAdmin.js";
+import { COLLECTIONS } from "../config/index.js";
+
 
 const router = express.Router();
 
 router.get("/", async (req, res) => {
   try {
-    const snap = await db.collection("purposes").where("isActive", "==",true).get();
+    const snap = await db.collection(COLLECTIONS.purposes).where("isActive", "==",true).get();
 
     const purposes = snap.docs.map((doc) => ({
       id: doc.id,

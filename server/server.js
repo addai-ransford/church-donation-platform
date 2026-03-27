@@ -3,7 +3,9 @@ import cors from "cors";
 import path from "path";
 import express from "express";
 import { fileURLToPath } from "url";
+import bodyParser from "body-parser";
 import history from "connect-history-api-fallback";
+import donationRoutes from "./routes/donation.routes.js";
 
 import routes from "./routes/index.js";
 
@@ -14,6 +16,8 @@ const app = express();
 const PORT = process.env.PORT || 8080;
 
 app.use(cors());
+
+app.use("/webhook", bodyParser.raw({ type: "application/json" }), donationRoutes);
 
 app.use(express.json());
 

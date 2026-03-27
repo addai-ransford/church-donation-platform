@@ -1,15 +1,17 @@
 import express from "express";
 import { db, FieldValue } from "../firebaseAdmin.js";
+import { COLLECTIONS } from "../config/index.js";
+
 
 const router = express.Router();
 router.use(express.json());
 
 router.get("/totals", async (req, res) => {
     try {
-        const purposesSnap = await db.collection("purposes").get();
+        const purposesSnap = await db.collection(COLLECTIONS.purposes).get();
 
         const donationsSnap = await db
-            .collection("donations")
+            .collection(COLLECTIONS.donations)
             .where("status", "==", "succeeded")
             .get();
 
@@ -17,7 +19,7 @@ router.get("/totals", async (req, res) => {
 
         donationsSnap.docs.forEach((doc) => {
             const data = doc.data();
-            const fundId = data.fundId;
+            const fundId = data.fund;
             const amount = data.amount || 0;
 
             if (!fundId) return;
@@ -47,7 +49,7 @@ router.get("/totals", async (req, res) => {
 router.post("/purposes", async (req, res) => {
     try {
         const { label } = req.body;
-        const docRef = await db.collection("purposes").add({
+        const docRef = await db.collection(COLLECTIONS.purposes).add({
             label,
             createdAt: FieldValue.serverTimestamp(),
             isActive: true,
@@ -60,7 +62,7 @@ router.post("/purposes", async (req, res) => {
 
 router.delete("/purposes/:id", async (req, res) => {
     try {
-        await db.collection("purposes").doc(req.params.id).delete();
+        await db.collection(COLLECTIONS.purposes).doc(req.params.id).delete();
         res.json({ success: true });
     } catch (err) {
         res.status(500).json({ error: "Delete failed" });
@@ -75,7 +77,7 @@ router.patch("/purposes/:id/status", async (req, res) => {
             return res.status(400).json({ error: "isActive must be a boolean" });
         }
 
-        await db.collection("purposes").doc(req.params.id).update({ isActive });
+        await db.collection(COLLECTIONS.purposes).doc(req.params.id).update({ isActive });
         res.json({ success: true, id: req.params.id, isActive });
     } catch (err) {
         res.status(500).json({ error: "Failed to update status" });

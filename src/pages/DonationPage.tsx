@@ -207,6 +207,7 @@ export default function DonationPage() {
                     </span>
                     <input
                       type="number"
+                      min={5}
                       inputMode="decimal"
                       autoFocus
                       value={input}
@@ -222,7 +223,7 @@ export default function DonationPage() {
             <GivingBibleVerse />
 
             <button
-              disabled={finalAmount < 1 || isCreating}
+              disabled={finalAmount < 5 || isCreating}
               onClick={handleCreateIntent}
               className="relative w-full py-4 mt-6 bg-yellow-500 disabled:bg-slate-800 disabled:text-slate-500 text-black font-black rounded-xl transition-all active:scale-[0.97] overflow-hidden shrink-0"
             >
